@@ -16,7 +16,7 @@ langgraph
 fastapi
 uvicorn[standard]
 pydantic
-
+git add .
 # Frontend
 streamlit
 
