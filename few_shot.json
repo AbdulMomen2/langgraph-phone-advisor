@@ -1,0 +1,100 @@
+[
+  {
+    "user_question": "What are the specs of Samsung Galaxy M17?",
+    "description": "User wants complete specifications of a single phone.",
+    "sql_schema": "SELECT * FROM samsung_phones WHERE name ILIKE '%Samsung Galaxy M17%' LIMIT 1;"
+  },
+  {
+    "user_question": "Compare Samsung Galaxy M17 and Samsung Galaxy F07 for camera performance.",
+    "description": "User wants to compare main and selfie camera features.",
+    "sql_schema": "SELECT name, main_camera, main_camera_features, main_camera_video, selfie_camera, selfie_camera_features, selfie_camera_video FROM samsung_phones WHERE name ILIKE '%Samsung Galaxy M17%' OR name ILIKE '%Samsung Galaxy F07%';"
+  },
+
+  {
+    "user_question": "Compare Samsung Galaxy Tab S11 Ultra and Samsung Galaxy Tab S11 for display and battery.",
+    "description": "User wants to compare tablet display sizes and battery specs.",
+    "sql_schema": "SELECT name, display_type, display_size, display_resolution, battery_type, battery_charging FROM samsung_phones WHERE name ILIKE '%Samsung Galaxy Tab S11 Ultra%' OR name ILIKE '%Samsung Galaxy Tab S11%';"
+  },
+  {
+    "user_question": "Compare Samsung Galaxy S25 Ultra, Samsung Galaxy S25+, and Samsung Galaxy S25 for camera and performance.",
+    "description": "User wants to compare multiple phones for camera and chipset specs.",
+    "sql_schema": "SELECT name, main_camera, main_camera_features, main_camera_video, platform_chipset, platform_cpu, platform_gpu FROM samsung_phones WHERE name ILIKE '%Samsung Galaxy S25 Ultra%' OR name ILIKE '%Samsung Galaxy S25+%' OR name ILIKE '%Samsung Galaxy S25%';"
+  },
+  {
+    "user_question": "List Samsung Galaxy F36, Samsung Galaxy F56, and Samsung Galaxy F16 with 5G support.",
+    "description": "User wants 5G enabled phones from F-series.",
+    "sql_schema": "SELECT name, network_5g_bands, misc_price FROM samsung_phones WHERE (name ILIKE '%Samsung Galaxy F36%' OR name ILIKE '%Samsung Galaxy F56%' OR name ILIKE '%Samsung Galaxy F16%') AND network_5g_bands IS NOT NULL AND network_5g_bands != '';"
+  },
+
+  {
+    "user_question": "Compare Samsung Galaxy A56, Samsung Galaxy A36, Samsung Galaxy A26 for price and memory.",
+    "description": "User wants to compare A-series phones for RAM, storage, and price.",
+    "sql_schema": "SELECT name, memory_internal, memory_card_slot, misc_price FROM samsung_phones WHERE name ILIKE '%Samsung Galaxy A56%' OR name ILIKE '%Samsung Galaxy A36%' OR name ILIKE '%Samsung Galaxy A26%';"
+  },
+  {
+    "user_question": "Find the most affordable Samsung Galaxy M16, M06, and M36 phones.",
+    "description": "User wants cheapest phones from M-series.",
+    "sql_schema": "SELECT name, misc_price FROM samsung_phones WHERE name ILIKE '%Samsung Galaxy M16%' OR name ILIKE '%Samsung Galaxy M06%' OR name ILIKE '%Samsung Galaxy M36%' ORDER BY CAST(REGEXP_REPLACE(misc_price, '[^0-9]', '', 'g') AS INTEGER) ASC LIMIT 5;"
+  },
+  {
+    "user_question": "What are the full specs of Galaxy F16?",
+    "description": "User wants complete specifications of Samsung Galaxy F16 model.",
+    "sql_schema": "SELECT * FROM samsung_phones WHERE name ILIKE '%Galaxy F16%' LIMIT 1;"
+  },
+
+  {
+    "user_question": "What are the full specs of Galaxy S25?",
+    "description": "User wants complete specifications of Samsung Galaxy S25 model.",
+    "sql_schema": "SELECT * FROM samsung_phones WHERE name ILIKE '%Galaxy S25%' LIMIT 1;"
+  },
+  {
+    "user_question": "Show Samsung phones with AMOLED display and 120Hz refresh rate.",
+    "description": "User wants phones featuring AMOLED screens with 120Hz refresh rate.",
+    "sql_schema": "SELECT name, display_type, display_refresh_rate, display_size, misc_price FROM samsung_phones WHERE display_type ILIKE '%AMOLED%' AND (display_refresh_rate ILIKE '%120%' OR display_type ILIKE '%120Hz%') ORDER BY launch_announced DESC LIMIT 5;"
+  },
+  {
+    "user_question": "List Samsung Galaxy phones launched in 2024 with Snapdragon chipsets.",
+    "description": "User wants to filter phones released in 2024 powered by Snapdragon chipsets.",
+    "sql_schema": "SELECT name, platform_chipset, platform_cpu, launch_announced, misc_price FROM samsung_phones WHERE platform_chipset ILIKE '%Snapdragon%' AND launch_announced ILIKE '%2024%' ORDER BY launch_announced DESC LIMIT 5;"
+  },
+  {
+    "user_question": "Compare Samsung Galaxy S25 Ultra and Galaxy Z Fold6 for display and performance.",
+    "description": "User wants to compare flagship phones for their display and chipset performance.",
+    "sql_schema": "SELECT name, display_type, display_size, display_resolution, platform_chipset, platform_cpu, platform_gpu, battery_type FROM samsung_phones WHERE name ILIKE '%Galaxy S25 Ultra%' OR name ILIKE '%Galaxy Z Fold6%';"
+  },
+  {
+    "user_question": "Find Samsung phones with battery above 5000mAh and 5G support.",
+    "description": "User wants high battery capacity phones that also support 5G.",
+    "sql_schema": "SELECT name, battery_type, battery_charging, network_5g_bands, misc_price FROM samsung_phones WHERE (battery_type ILIKE '%5000%' OR battery_type ILIKE '%6000%') AND network_5g_bands IS NOT NULL AND network_5g_bands <> '' ORDER BY battery_type DESC LIMIT 5;"
+  },
+  {
+    "user_question": "Which Samsung Galaxy phones offer best value under $800 with AMOLED display?",
+    "description": "User wants AMOLED display phones priced below $800.",
+    "sql_schema": "SELECT name, display_type, misc_price, usd_price FROM ( SELECT name, display_type, misc_price, MIN(CAST(REGEXP_REPLACE(match[1], '[^\\d.]', '', 'g') AS DOUBLE PRECISION)) AS usd_price FROM samsung_phones CROSS JOIN LATERAL REGEXP_MATCHES(misc_price, '\\$\\s*[0-9]+[,.]?[0-9]*', 'g') AS match GROUP BY name, display_type, misc_price ) AS t WHERE usd_price <= 800 AND display_type ILIKE '%AMOLED%' ORDER BY usd_price ASC LIMIT 5;"
+  },
+
+  {
+    "user_question": "Compare Galaxy S25 Ultra and S25+ for photography",
+    "sql_schema": "SELECT name, main_camera, main_camera_features, main_camera_video, selfie_camera, selfie_camera_features, selfie_camera_video FROM samsung_phones WHERE name ILIKE '%Galaxy S25 Ultra%' OR name ILIKE '%S25+%' LIMIT 5;"
+  },
+  {
+    "user_question": "Which Samsung phones have a price under $1000?",
+    "sql_schema": "SELECT name, misc_price, usd_price\nFROM (\n    SELECT\n  name,\n        misc_price,\n        MIN(CAST(REGEXP_REPLACE(match[1], '[^\\d.]', '', 'g') AS DOUBLE PRECISION)) AS usd_price\n    FROM samsung_phones\n    CROSS JOIN LATERAL REGEXP_MATCHES(misc_price, '\\$\\s*[0-9]+[,.]?[0-9]*', 'g') AS match\n    GROUP BY name, misc_price\n) AS t\nWHERE usd_price <= 1000\nORDER BY usd_price ASC\nLIMIT 20;"
+  },
+  {
+    "user_question": "Find Samsung phones with the best cameras under $1000.",
+    "sql_schema": "SELECT name, main_camera, main_camera_features, misc_price, usd_price\nFROM (\n    SELECT\n        name,\n        main_camera,\n        main_camera_features,\n        misc_price,\n        MIN(CAST(REGEXP_REPLACE(match[1], '[^\\d.]', '', 'g') AS DOUBLE PRECISION)) AS usd_price\n    FROM samsung_phones\n    CROSS JOIN LATERAL REGEXP_MATCHES(misc_price, '\\$\\s*[0-9]+[,.]?[0-9]*', 'g') AS match\n    GROUP BY name, main_camera, main_camera_features, misc_price\n) AS t\nWHERE usd_price <= 1000\nORDER BY main_camera DESC\nLIMIT 5;"
+  },
+  {
+    "user_question": "Compare Samsung Galaxy S25 Ultra and S25 for display and battery under $1000.",
+    "sql_schema": "SELECT name, display_size, display_resolution, battery_type, misc_price, usd_price\nFROM (\n    SELECT\n        name,\n        display_size,\n        display_resolution,\n        battery_type,\n        misc_price,\n        MIN(CAST(REGEXP_REPLACE(match[1], '[^\\d.]', '', 'g') AS DOUBLE PRECISION)) AS usd_price\n    FROM samsung_phones\n    CROSS JOIN LATERAL REGEXP_MATCHES(misc_price, '\\$\\s*[0-9]+[,.]?[0-9]*', 'g') AS match\n    WHERE name ILIKE '%S25 Ultra%' OR name ILIKE '%S25%'\n    GROUP BY name, display_size, display_resolution, battery_type, misc_price\n) AS t\nWHERE usd_price <= 1000\nLIMIT 5;"
+  },
+  {
+    "user_question": "Which Samsung phones under $1000 have the best selfie cameras?",
+    "sql_schema": "SELECT name, selfie_camera, selfie_camera_features, misc_price, usd_price\nFROM (\n    SELECT\n        name,\n        selfie_camera,\n        selfie_camera_features,\n        misc_price,\n        MIN(CAST(REGEXP_REPLACE(match[1], '[^\\d.]', '', 'g') AS DOUBLE PRECISION)) AS usd_price\n    FROM samsung_phones\n    CROSS JOIN LATERAL REGEXP_MATCHES(misc_price, '\\$\\s*[0-9]+[,.]?[0-9]*', 'g') AS match\n    GROUP BY name, selfie_camera, selfie_camera_features, misc_price\n) AS t\nWHERE usd_price <= 1000\nORDER BY selfie_camera DESC\nLIMIT 5;"
+  },
+  {
+    "user_question": "List the top 5 Samsung phones under $1000 sorted by release date.",
+    "sql_schema": "SELECT name, launch_announced, misc_price, usd_price\nFROM (\n    SELECT\n        name,\n        launch_announced,\n        misc_price,\n        MIN(CAST(REGEXP_REPLACE(match[1], '[^\\d.]', '', 'g') AS DOUBLE PRECISION)) AS usd_price\n    FROM samsung_phones\n    CROSS JOIN LATERAL REGEXP_MATCHES(misc_price, '\\$\\s*[0-9]+[,.]?[0-9]*', 'g') AS match\n    GROUP BY name, launch_announced, misc_price\n) AS t\nWHERE usd_price <= 1000\nORDER BY launch_announced DESC\nLIMIT 5;"
+  }
+]
